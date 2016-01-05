@@ -1,64 +1,18 @@
-import { combineReducers } from 'redux';
-import * from action.js
-
 /**
- * 根据action来操作数据
- * @param  {} state  [状态]
- * @param  {Object} action [action动作]
- * @return {}        [返回修改状态]
- */ 
-export function operateState(state = 'initialState', action) {
-  switch (action.type) {
-    case STATE_TYPE:
-      break;
-    default:
-      return state;
+ * 状态处理器创建者
+ * @param  {sting} actionType   action类别
+ * @param  {} initialState 初始状态
+ * @return {function}              状态处理器
+ */
+export function createStateHandler(...args /*,initialState*/ ) {
+  let initialState = args.pop();
+
+  return (callback) => {
+    return (state = initialState, action) => {
+      console.log('state=%s,action=%s', JSON.stringify(state), JSON.stringify(action));
+      if (args.indexOf(action.type) === -1) return state;
+      
+      return callback.call(null, state, action.data)
+    }
   }
 }
-
-export default const reducer = combineReducers({ operateState });
-
-
-/**
- * 示例
- */
-
-// import { combineReducers } from 'redux';
-// import { ADD_TODO, COMPLETE_TODO, SET_VISIBILITY_FILTER, VisibilityFilters } from './actions';
-// const { SHOW_ALL } = VisibilityFilters;
-
-// function visibilityFilter(state = SHOW_ALL, action) {
-//   switch (action.type) {
-//   case SET_VISIBILITY_FILTER:
-//     return action.filter;
-//   default:
-//     return state;
-//   }
-// }
-
-// function todos(state = [], action) {
-//   switch (action.type) {
-//   case ADD_TODO:
-//     return [...state, {
-//       text: action.text,
-//       completed: false
-//     }];
-//   case COMPLETE_TODO:
-//     return [
-//       ...state.slice(0, action.index),
-//       Object.assign({}, state[action.index], {
-//         completed: true
-//       }),
-//       ...state.slice(action.index + 1)
-//     ];
-//   default:
-//     return state;
-//   }
-// }
-
-// const todoApp = combineReducers({
-//   visibilityFilter,
-//   todos
-// });
-
-// export default todoApp;
